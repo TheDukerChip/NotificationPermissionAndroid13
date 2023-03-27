@@ -47,40 +47,45 @@ class MainActivity : AppCompatActivity() {
         val message = intent?.getStringExtra(NOTIFICATION_MESSAGE_TAG)
         findViewById<TextView>(R.id.tv_message).text = message
         findViewById<Button>(R.id.click).setOnClickListener {
-            when {
-                ContextCompat.checkSelfPermission(
-                    this, Manifest.permission.POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_GRANTED -> {
-                    // You can use the API that requires the permission.
-                    Log.e(TAG, "onCreate: PERMISSION GRANTED")
-                    sendNotification(this)
-                }
-                shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
-                    Snackbar.make(
-                        findViewById(R.id.parent_layout),
-                        "Notification blocked",
-                        Snackbar.LENGTH_LONG
-                    ).setAction("Settings") {
-                        // Responds to click on the action
-                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        val uri: Uri = Uri.fromParts("package", packageName, null)
-                        intent.data = uri
-                        startActivity(intent)
-                    }.show()
-                    //  Toast.makeText(this, "NOT ALLOWED", Toast.LENGTH_SHORT).show()
-                }
-                else -> {
-                    Log.e(TAG, "onCreate: ask for permissions")
-                    // You can directly ask for the permission.
-                    // The registered ActivityResultCallback gets the result of this request.
-                  //  if (Build.VERSION.SDK_INT >= 33) {
-                     //   Log.e(TAG, "onCreate: 33" )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                when {
+                    ContextCompat.checkSelfPermission(
+                        this, Manifest.permission.POST_NOTIFICATIONS
+                    ) == PackageManager.PERMISSION_GRANTED -> {
+                        // You can use the API that requires the permission.
+                        Log.e(TAG, "onCreate: PERMISSION GRANTED")
+                        sendNotification(this)
+                    }
+                    shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
+                        Snackbar.make(
+                            findViewById(R.id.parent_layout),
+                            "Notification blocked",
+                            Snackbar.LENGTH_LONG
+                        ).setAction("Settings") {
+                            // Responds to click on the action
+                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            val uri: Uri = Uri.fromParts("package", packageName, null)
+                            intent.data = uri
+                            startActivity(intent)
+                        }.show()
+                        //  Toast.makeText(this, "NOT ALLOWED", Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        Log.e(TAG, "onCreate: ask for permissions")
+                        // You can directly ask for the permission.
+                        // The registered ActivityResultCallback gets the result of this request.
+                        //  if (Build.VERSION.SDK_INT >= 33) {
+                        //   Log.e(TAG, "onCreate: 33" )
                         requestPermissionLauncher.launch(
                             Manifest.permission.POST_NOTIFICATIONS
                         )
-                   // }
+                        // }
+                    }
                 }
+            } else {
+                sendNotification(this)
+
             }
         }
     }

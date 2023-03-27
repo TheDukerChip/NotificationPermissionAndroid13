@@ -5,13 +5,13 @@ plugins {
 
 android {
     namespace 'com.example.myapplication'
-//    compileSdk 32
-    compileSdkPreview "Tiramisu"
+    compileSdk 33
+//    compileSdkPreview "Tiramisu"
 
     defaultConfig {
         applicationId "com.example.myapplication"
         minSdk 23
-        targetSdk 32
+        targetSdk 33
 //        targetSdkPreview "Tiramisu"
         versionCode 1
         versionName "1.0"
